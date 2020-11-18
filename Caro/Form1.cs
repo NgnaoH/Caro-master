@@ -147,8 +147,7 @@ namespace Caro
 
                     ProcesssData(data);
                 }
-                catch (Exception e)
-                {
+                catch               {
 
                 }
             });
@@ -187,7 +186,7 @@ namespace Caro
                 case (int)SocketCommand.Quit:
                     this.Invoke((MethodInvoker)(() =>
                     {
-                        socket.isServer = false;
+                        socket.isServer = true;
                         ChessBoard.DrawChessBoard();
                         btnLAN.Enabled = true;
                         txbStatus.Text = data.Message;
