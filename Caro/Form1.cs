@@ -62,9 +62,9 @@ namespace Caro
         {
             if (MessageBox.Show("New Game ???", "Notification", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
             {
-                pnlChessBoard.Enabled = true;
                 NewGame();
                 socket.Send(new SocketData((int)SocketCommand.NewGame, "", new Point()));
+                pnlChessBoard.Enabled = true;
             }             
         }
 
@@ -83,7 +83,7 @@ namespace Caro
             {
                 try
                 {
-                    socket.Send(new SocketData((int)SocketCommand.Quit, "Conecting ...", new Point()));
+                    socket.Send(new SocketData((int)SocketCommand.Quit, "No connect", new Point()));
                 }
                 catch { }
             }
@@ -114,6 +114,7 @@ namespace Caro
                 txbStatus.Text = "Connecting ...";
                 socket.isServer = true;
                 pnlChessBoard.Enabled = true;
+                btnLAN.Enabled = false;
                 socket.CreateServer();
             }
             else
@@ -121,11 +122,11 @@ namespace Caro
                 txbStatus.Text = "Connected";
                 socket.isServer = false;
                 pnlChessBoard.Enabled = false;
-                Listen();
+                btnLAN.Enabled = false;
                 socket.Send(new SocketData((int)SocketCommand.Notify, "Connected", new Point()));
+                Listen();
             }
 
-            btnLAN.Enabled = false;
         }
 
         private void Form1_Shown(object sender, EventArgs e)
@@ -162,7 +163,7 @@ namespace Caro
                 case (int)SocketCommand.Notify:
                     this.Invoke((MethodInvoker)(() =>
                     {
-                        MessageBox.Show("Had found player");
+                        btnLAN.Enabled = false;
                         txbStatus.Text = data.Message;
                     }));
                     break;
@@ -184,9 +185,14 @@ namespace Caro
                     MessageBox.Show("Player" + data.Message + " wonˆˆ");
                     break;
                 case (int)SocketCommand.Quit:
-                    btnLAN.Enabled = true;
-                    txbStatus.Text = data.Message;
-                    MessageBox.Show("Player has quit");
+                    this.Invoke((MethodInvoker)(() =>
+                    {
+                        socket.isServer = false;
+                        ChessBoard.DrawChessBoard();
+                        btnLAN.Enabled = true;
+                        txbStatus.Text = data.Message;
+                        MessageBox.Show("Player has quit");
+                    }));
                     break;
                 default:
                     break;
