@@ -75,16 +75,10 @@ namespace Caro
             return DeserializeData(receiveData);
         }
 
-        private bool SendData(Socket target, byte[] data)
-        {
-            return target.Send(data) == 1 ? true : false;
-        }
+        private bool SendData(Socket target, byte[] data) => target.Send(data) == 1 ? true : false;     
 
+        private bool ReceiveData(Socket target, byte[] data) => target.Receive(data) == 1 ? true : false;
 
-        private bool ReceiveData(Socket target, byte[] data)
-        {
-            return target.Receive(data) == 1 ? true : false;
-        }
         /// <summary>
         /// Nén đối tượng thành mảng byte[]
         /// </summary>
