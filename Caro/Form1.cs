@@ -124,6 +124,8 @@ namespace Caro
                 Listen();
                 socket.Send(new SocketData((int)SocketCommand.Notify, "Connected", new Point()));
             }
+
+            btnLAN.Enabled = false;
         }
 
         private void Form1_Shown(object sender, EventArgs e)
@@ -158,7 +160,11 @@ namespace Caro
             switch (data.Command)
             {
                 case (int)SocketCommand.Notify:
-                    txbStatus.Text = data.Message;
+                    this.Invoke((MethodInvoker)(() =>
+                    {
+                        MessageBox.Show("Had found player");
+                        txbStatus.Text = data.Message;
+                    }));
                     break;
                 case (int)SocketCommand.SendPoint:
                     this.Invoke((MethodInvoker)(() =>
@@ -178,6 +184,7 @@ namespace Caro
                     MessageBox.Show("Player" + data.Message + " wonˆˆ");
                     break;
                 case (int)SocketCommand.Quit:
+                    btnLAN.Enabled = true;
                     txbStatus.Text = data.Message;
                     MessageBox.Show("Player has quit");
                     break;
